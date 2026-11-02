@@ -223,3 +223,4 @@ app.on('activate', () => {
     createWindow();
   }
 });
+

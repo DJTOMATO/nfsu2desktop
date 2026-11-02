@@ -102,3 +102,4 @@ You can donate directly at [**ko-fi.com/lenabot**](https://ko-fi.com/lenabot). F
 ## Disclaimer
 
 This is an unofficial community desktop wrapper for [nfsu2.xyz](https://nfsu2.xyz/). It is not affiliated with or endorsed by Electronic Arts. *Need for Speed* and *Need for Speed: Underground 2* are trademarks of Electronic Arts Inc. No game files, ROMs, or copyrighted assets are hosted or distributed in this repository.
+

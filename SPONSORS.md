@@ -75,3 +75,4 @@ Si no podés colaborar económicamente, también podés ayudar un montón:
 A heartfelt thank you to everyone who supports this project! / ¡Muchas gracias de corazón a todas las personas que apoyan este proyecto!
 
 *(Sponsors will be listed here / Los patrocinadores se listarán aquí)*
+

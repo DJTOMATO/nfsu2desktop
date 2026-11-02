@@ -102,3 +102,4 @@ Podés donar directamente en [**ko-fi.com/lenabot**](https://ko-fi.com/lenabot).
 ## Aviso legal
 
 Este proyecto es un cliente de escritorio no oficial hecho por la comunidad para [nfsu2.xyz](https://nfsu2.xyz/). No tiene ninguna relación con Electronic Arts ni cuenta con su respaldo. *Need for Speed* y *Need for Speed: Underground 2* son marcas registradas de Electronic Arts Inc. Este repositorio no aloja ni distribuye archivos protegidos por derechos de autor o copias del juego original.
+
