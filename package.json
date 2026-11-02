@@ -1,0 +1,59 @@
+{
+  "name": "nfsu2desktop",
+  "productName": "Underground 2 Revived",
+  "version": "1.0.0",
+  "description": "Desktop client for Need for Speed: Underground 2 (nfsu2.xyz)",
+  "main": "main.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DJTOMATO/nfsu2desktop.git"
+  },
+  "homepage": "https://github.com/DJTOMATO/nfsu2desktop#readme",
+  "bugs": {
+    "url": "https://github.com/DJTOMATO/nfsu2desktop/issues"
+  },
+  "funding": {
+    "type": "ko-fi",
+    "url": "https://ko-fi.com/lenabot"
+  },
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win"
+  },
+  "keywords": [
+    "electron",
+    "nfsu2",
+    "need-for-speed-underground-2",
+    "racing",
+    "webassembly",
+    "webgpu"
+  ],
+  "author": "Glas",
+  "license": "GPL-3.0",
+  "devDependencies": {
+    "electron": "^45.0.0",
+    "electron-builder": "^26.15.3"
+  },
+  "build": {
+    "appId": "com.glas.nfsu2desktop",
+    "productName": "Underground 2 Revived",
+    "win": {
+      "target": "nsis",
+      "icon": "icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Underground 2 Revived"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "index.html",
+      "icon.ico",
+      "icon.png"
+    ]
+  }
+}

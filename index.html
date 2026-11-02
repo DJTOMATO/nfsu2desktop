@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="dark">
+  <title>Need for Speed: Underground 2 — Underground 2 Revived</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0d0d0d;
+      --surface: #171717;
+      --line: #292929;
+      --line-2: #3d3d3d;
+      --text: #f0f0f0;
+      --muted: #a3a3a3;
+      --faint: #666666;
+      --accent: #c8f088;
+      --accent-dim: #98c456;
+      --cyan: #38bdf8;
+      --danger: #ef4444;
+      --sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      height: 100%;
+      background: radial-gradient(ellipse at 50% -15%, #1f2b18 0%, #121710 40%, var(--bg) 100%) fixed var(--bg);
+      color: var(--text);
+      font: 15px/1.55 var(--sans);
+      overflow: hidden;
+      user-select: none;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 24px;
+      gap: 20px;
+    }
+
+    .brand {
+      font: 700 15px/1 var(--sans);
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .brand b {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    h1 {
+      margin: 0;
+      font: 800 clamp(28px, 5vw, 48px)/1.08 var(--sans);
+      letter-spacing: 0.04em;
+      color: #ffffff;
+      text-transform: uppercase;
+    }
+
+    h1 span {
+      display: block;
+      margin-top: 6px;
+      font-size: 0.6em;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      color: var(--accent);
+      text-shadow: 0 0 16px rgba(200, 240, 136, 0.4);
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 14px;
+      letter-spacing: 0.05em;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 10px var(--accent);
+      animation: pulse 1.2s ease-in-out infinite;
+    }
+
+    .dot.err {
+      background: var(--danger);
+      box-shadow: 0 0 10px var(--danger);
+      animation: none;
+    }
+
+    @keyframes pulse {
+      50% {
+        opacity: 0.35;
+      }
+    }
+
+    button {
+      margin-top: 8px;
+      padding: 11px 26px;
+      font: 700 13px var(--sans);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #0d0d0d;
+      background: var(--accent);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.15s ease, transform 0.1s ease;
+    }
+
+    button:hover {
+      background: #dbf8a3;
+      transform: translateY(-1px);
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="brand">Underground 2 <b>Revived</b></div>
+  <h1>Need for Speed <span>Underground 2</span></h1>
+  <div class="status">
+    <span class="dot" id="dot"></span>
+    <span id="msg">Connecting to server…</span>
+  </div>
+  <button type="button" id="retry" hidden>Retry Connection</button>
+
+  <script>
+    const TARGET_URL = 'https://nfsu2.xyz/';
+    const params = new URLSearchParams(window.location.search);
+    const isError = params.get('error') === '1';
+    const dot = document.getElementById('dot');
+    const msg = document.getElementById('msg');
+    const retryBtn = document.getElementById('retry');
+
+    function connect() {
+      dot.className = 'dot';
+      msg.textContent = 'Connecting to Underground 2 Revived…';
+      retryBtn.hidden = true;
+      if (window.electronAPI && window.electronAPI.loadSite) {
+        window.electronAPI.loadSite(TARGET_URL);
+      } else {
+        window.location.href = TARGET_URL;
+      }
+    }
+
+    retryBtn.addEventListener('click', connect);
+
+    if (isError) {
+      dot.className = 'dot err';
+      msg.textContent = 'Could not reach nfsu2.xyz. Check your internet connection.';
+      retryBtn.hidden = false;
+    } else {
+      connect();
+    }
+  </script>
+</body>
+
+</html>
