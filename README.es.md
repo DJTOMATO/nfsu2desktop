@@ -5,7 +5,7 @@
 <h1 align="center">NFSU2 Desktop</h1>
 
 <p align="center">
-  Cliente de escritorio para <a href="https://nfsu2.xyz/">Underground 2 Revived</a> (Need for Speed: Underground 2).<br>
+  Cliente de escritorio <b>no oficial</b> para <a href="https://nfsu2.xyz/">Underground 2 Revived</a> (Need for Speed: Underground 2).<br>
   <a href="README.md">English</a> · <b>Español</b>
 </p>
 
@@ -15,6 +15,9 @@
   <a href="https://github.com/DJTOMATO/nfsu2desktop/issues">Reportar un Problema</a> ·
   <a href="https://ko-fi.com/lenabot"><b>Donar en Ko-fi</b></a>
 </p>
+
+> [!IMPORTANT]
+> **Cliente no oficial:** Este proyecto es una iniciativa comunitaria independiente y **no está afiliado, respaldado, mantenido ni asociado** con los creadores u operadores de [nfsu2.xyz](https://nfsu2.xyz/) ni con Electronic Arts.
 
 ---
 
@@ -101,5 +104,5 @@ Podés donar directamente en [**ko-fi.com/lenabot**](https://ko-fi.com/lenabot).
 
 ## Aviso legal
 
-Este proyecto es un cliente de escritorio no oficial hecho por la comunidad para [nfsu2.xyz](https://nfsu2.xyz/). No tiene ninguna relación con Electronic Arts ni cuenta con su respaldo. *Need for Speed* y *Need for Speed: Underground 2* son marcas registradas de Electronic Arts Inc. Este repositorio no aloja ni distribuye archivos protegidos por derechos de autor o copias del juego original.
+Este proyecto es un **cliente de escritorio no oficial** desarrollado por la comunidad para [nfsu2.xyz](https://nfsu2.xyz/). Es un proyecto independiente y **no está afiliado, mantenido, autorizado ni respaldado** por los creadores u operadores de [nfsu2.xyz](https://nfsu2.xyz/) ni por Electronic Arts. *Need for Speed* y *Need for Speed: Underground 2* son marcas registradas de Electronic Arts Inc. Este repositorio no aloja ni distribuye archivos protegidos por derechos de autor o copias del juego original.
 
