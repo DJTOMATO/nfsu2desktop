@@ -84,10 +84,20 @@ Para abrir el cliente en modo desarrollo:
 npm start
 ```
 
-Para generar el instalador NSIS de Windows (se guarda en `dist/`):
+Para compilar los instaladores de tu plataforma (se guardan en `dist/`):
 
 ```bash
-npm run build
+# Windows x64 (Instalador NSIS + ZIP portable)
+npm run build:win
+
+# Windows ARM64
+npm run build:win:arm64
+
+# Linux (AppImage + .deb)
+npm run build:linux
+
+# macOS (.dmg + .zip)
+npm run build:mac
 ```
 
 ## Apoyo y donaciones

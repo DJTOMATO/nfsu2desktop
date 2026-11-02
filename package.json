@@ -18,7 +18,11 @@
   },
   "scripts": {
     "start": "electron .",
-    "build": "electron-builder --win"
+    "build": "electron-builder",
+    "build:win": "electron-builder --win --x64 --publish never",
+    "build:win:arm64": "electron-builder --win --arm64 --config.nsis.oneClick=false --config.nsis.allowToChangeInstallationDirectory=true --publish never",
+    "build:mac": "electron-builder --mac --publish never",
+    "build:linux": "electron-builder --linux --publish never"
   },
   "keywords": [
     "electron",
@@ -37,23 +41,54 @@
   "build": {
     "appId": "com.glas.nfsu2desktop",
     "productName": "Underground 2 Revived",
+    "npmRebuild": false,
     "win": {
-      "target": "nsis",
-      "icon": "icon.ico"
+      "target": [
+        {
+          "target": "nsis"
+        },
+        {
+          "target": "zip"
+        }
+      ],
+      "icon": "icon.ico",
+      "artifactName": "${productName}-${version}-win-${arch}.${ext}"
     },
     "nsis": {
       "oneClick": false,
+      "perMachine": false,
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "Underground 2 Revived"
+      "shortcutName": "Underground 2 Revived",
+      "artifactName": "${productName}-Setup-${version}-${arch}.${ext}"
+    },
+    "mac": {
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "icon": "icon.icns",
+      "category": "public.app-category.games",
+      "artifactName": "${productName}-${version}-mac-${arch}.${ext}"
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "icon": "icon.png",
+      "category": "Game",
+      "maintainer": "Glas <48269777+DJTOMATO@users.noreply.github.com>",
+      "artifactName": "${productName}-${version}-linux-${arch}.${ext}"
     },
     "files": [
       "main.js",
       "preload.js",
       "index.html",
       "icon.ico",
-      "icon.png"
+      "icon.png",
+      "icon.icns"
     ]
   }
 }

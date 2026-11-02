@@ -84,10 +84,20 @@ To run the client in development mode:
 npm start
 ```
 
-To build the Windows NSIS installer (outputs to `dist/`):
+To package for your platform (outputs to `dist/`):
 
 ```bash
-npm run build
+# Windows x64 (NSIS Installer + Portable ZIP)
+npm run build:win
+
+# Windows ARM64
+npm run build:win:arm64
+
+# Linux (AppImage + .deb)
+npm run build:linux
+
+# macOS (.dmg + .zip)
+npm run build:mac
 ```
 
 ## Support & Donations
