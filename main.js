@@ -327,7 +327,7 @@ async function updateDiscordPresence() {
     const gd = info?.gameData || {};
     const sm = gd.statusMap || {};
     const drive = sm.drive ?? 0;
-    const isDriving = (drive & 1) !== 0;
+    const isDriving = ((drive & 3) > 0);
     const isMoving = (drive & 2) !== 0;
     const isMenu = (drive & 8) !== 0;
     const engage = sm.engage ?? 0;
@@ -342,7 +342,11 @@ async function updateDiscordPresence() {
     const saveName = gd.saveName || '';
     const fps = gd.fps || 0;
 
-    smallImageText = `${saveName ? 'Driver: ' + saveName : 'Need for Speed'}${fps > 0 ? ' (' + fps + ' FPS)' : ''}`;
+    const isPhotoMode = (photo & 2) !== 0;
+    const isHydraulics = hydraulics === 2;
+    const isDrifting = (drift & 1) !== 0;
+
+    smallImageText = `${saveName ? 'Driver: ' + saveName : 'Need for Speed'}${fps > 0 ? ' (' + fps + ' FPS)' : ''}`.slice(0, 127);
 
     const isInRace = netrace > 0 || engage > 0;
     if (isInRace && !wasInRace) {
@@ -353,7 +357,7 @@ async function updateDiscordPresence() {
       raceStartTime = null;
     }
 
-    if (photo > 0) {
+    if (isPhotoMode) {
       details = '📸 In Photo Mode';
       state = 'Capturing Bayview City';
       startTimestamp = gameStartTime || clientLaunchTime;
@@ -362,7 +366,7 @@ async function updateDiscordPresence() {
       state = `${peers > 0 ? (peers + 1) + ' Racers | ' : ''}Bayview Circuit`;
       startTimestamp = raceStartTime || gameStartTime || clientLaunchTime;
     } else if (engage > 0) {
-      if ((drift & 1) !== 0) {
+      if (isDrifting) {
         details = '🏎️ Drift Competition';
         state = driftTotal > 0 ? `Score: ${Math.round(driftTotal).toLocaleString()} pts` : 'Drifting in Bayview';
       } else {
@@ -371,10 +375,10 @@ async function updateDiscordPresence() {
       }
       startTimestamp = raceStartTime || gameStartTime || clientLaunchTime;
     } else if (isDriving && !isMenu) {
-      if ((drift & 1) !== 0) {
+      if (isDrifting) {
         details = '💨 Street Drifting';
         state = driftTotal > 0 ? `Drift: ${Math.round(driftTotal).toLocaleString()} pts` : 'Sliding around Bayview';
-      } else if (hydraulics > 0) {
+      } else if (isHydraulics) {
         details = '🎶 Lowrider Hydraulics';
         state = 'Bouncing Car | Bayview';
       } else {
@@ -390,7 +394,7 @@ async function updateDiscordPresence() {
       startTimestamp = gameStartTime || clientLaunchTime;
     } else {
       // In Garage / Tuning Shop / Menu / Pause
-      if (pause > 0) {
+      if (pause === 1) {
         details = '⏸️ Paused';
         state = 'In-Game Menu';
       } else if (info?.lobbyText) {
