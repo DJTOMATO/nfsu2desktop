@@ -1,7 +1,7 @@
 {
   "name": "nfsu2desktop",
   "productName": "Underground 2 Revived",
-  "version": "1.1.1",
+  "version": "1.1.5",
   "description": "Desktop client for Need for Speed: Underground 2 (nfsu2.xyz)",
   "main": "main.js",
   "repository": {

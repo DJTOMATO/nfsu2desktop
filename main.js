@@ -157,7 +157,7 @@ async function checkForUpdates(parentWindow) {
   }
 }
 
-// --- Dynamic Mod & Telemetry Engine (nfsu2mod.js) ---
+// --- Dynamic Mod Engine (nfsu2mod.js) ---
 const REMOTE_MOD_URL = 'https://raw.githubusercontent.com/DJTOMATO/nfsu2desktop/main/nfsu2mod.js';
 let cachedModCode = null;
 let lastModRpcTimestamp = 0;
@@ -242,7 +242,7 @@ async function initDiscordRPC() {
 async function updateDiscordPresence() {
   if (!rpcConnected || !rpc) return;
 
-  // If nfsu2mod.js is actively sending live telemetry updates, let it take precedence
+  // If nfsu2mod.js is actively sending live game activity updates, let it take precedence
   if (Date.now() - lastModRpcTimestamp < 15000) {
     return;
   }

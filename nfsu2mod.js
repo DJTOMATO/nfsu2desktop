@@ -1,8 +1,8 @@
 /**
- * NFSU2 Desktop Client Dynamic Mod & Telemetry Engine (nfsu2mod.js)
+ * NFSU2 Desktop Client Dynamic Mod Engine (nfsu2mod.js)
  * ------------------------------------------------------------------
  * Loaded dynamically on startup from GitHub (with local fallback).
- * Provides live telemetry extraction for Discord Rich Presence, client-side
+ * Provides live game status updates for Discord Rich Presence, client-side
  * enhancements, in-game quality-of-life tweaks, and seamless over-the-air updates
  * without requiring client re-compilations.
  */
@@ -29,7 +29,7 @@
     return Math.round(num || 0).toLocaleString('en-US');
   }
 
-  function getTelemetry() {
+  function getGameStatus() {
     const isPlaying = Boolean(document.body && document.body.dataset.phase === 'playing');
     const statusEl = document.getElementById('status');
     const statusText = statusEl ? statusEl.textContent.trim() : '';
@@ -196,8 +196,8 @@
 
   function update() {
     try {
-      const telemetry = getTelemetry();
-      const activity = computeDiscordActivity(telemetry);
+      const status = getGameStatus();
+      const activity = computeDiscordActivity(status);
 
       const activityKey = `${activity.details}|${activity.state}|${activity.smallImageText}`;
       if (activityKey !== lastActivityKey) {
@@ -211,13 +211,13 @@
     }
   }
 
-  // Poll telemetry every 4 seconds
+  // Poll game status every 4 seconds
   const intervalId = setInterval(update, 4000);
   update();
 
   window.__nfsu2mod = {
     version: MOD_VERSION,
-    getTelemetry,
+    getGameStatus,
     forceUpdate: update,
     stop: () => clearInterval(intervalId)
   };
