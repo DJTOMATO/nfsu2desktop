@@ -138,6 +138,93 @@ async function checkForUpdates(parentWindow) {
   }
 }
 
+// --- Discord Rich Presence (RPC) ---
+const RPC = require('discord-rpc');
+const DISCORD_CLIENT_ID = '1044809640241799178';
+let rpc = null;
+let rpcConnected = false;
+let rpcInterval = null;
+let gameStartTime = null;
+const clientLaunchTime = Date.now();
+
+function getRpcClient() {
+  if (!rpc) {
+    rpc = new RPC.Client({ transport: 'ipc' });
+
+    rpc.on('ready', () => {
+      rpcConnected = true;
+      updateDiscordPresence();
+    });
+
+    rpc.on('disconnected', () => {
+      rpcConnected = false;
+    });
+  }
+  return rpc;
+}
+
+async function initDiscordRPC() {
+  try {
+    const client = getRpcClient();
+    await client.login({ clientId: DISCORD_CLIENT_ID });
+  } catch (_) {
+    rpcConnected = false;
+    // Retry periodically if Discord is opened later
+    setTimeout(initDiscordRPC, 15000);
+  }
+}
+
+async function updateDiscordPresence() {
+  if (!rpcConnected || !rpc) return;
+
+  let isPlaying = false;
+  let statusText = '';
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    try {
+      const state = await mainWindow.webContents.executeJavaScript(`
+        (() => {
+          const isPlaying = Boolean(document.body && document.body.dataset.phase === 'playing');
+          const statusEl = document.getElementById('status');
+          const statusText = statusEl ? statusEl.textContent.trim() : '';
+          return { isPlaying, statusText };
+        })()
+      `).catch(() => null);
+
+      if (state) {
+        isPlaying = state.isPlaying;
+        statusText = state.statusText;
+      }
+    } catch (_) {}
+  }
+
+  if (isPlaying && !gameStartTime) {
+    gameStartTime = Date.now();
+  } else if (!isPlaying) {
+    gameStartTime = null;
+  }
+
+  const activity = {
+    details: isPlaying ? 'In-Game (Bayview)' : 'Main Menu',
+    state: isPlaying ? (statusText || 'Free Roam / Racing') : (statusText || 'In Garage / Lobby'),
+    startTimestamp: isPlaying ? (gameStartTime || clientLaunchTime) : clientLaunchTime,
+    largeImageKey: 'logo',
+    largeImageText: 'Underground 2 Revived',
+    smallImageKey: 'logo',
+    smallImageText: 'Need for Speed: Underground 2',
+    instance: false,
+    buttons: [
+      { label: 'Play in Browser', url: 'https://nfsu2.xyz/' },
+      { label: 'Download Desktop App', url: 'https://github.com/DJTOMATO/nfsu2desktop/releases' }
+    ]
+  };
+
+  try {
+    await rpc.setActivity(activity);
+  } catch (_) {
+    rpcConnected = false;
+  }
+}
+
 function getCleanUserAgent() {
   return app.userAgentFallback
     .replace(/\s*Electron\/[^\s]+/i, '')
@@ -343,6 +430,10 @@ function createWindow() {
 app.whenReady().then(() => {
   powerSaveId = powerSaveBlocker.start('prevent-display-sleep');
   createWindow();
+
+  // Initialize Discord Rich Presence
+  initDiscordRPC();
+  rpcInterval = setInterval(updateDiscordPresence, 10000);
 });
 
 ipcMain.on('load-site', (event, url) => {
@@ -362,6 +453,19 @@ ipcMain.on('load-site', (event, url) => {
 ipcMain.on('retry-connection', () => {
   if (mainWindow) {
     mainWindow.loadURL(TARGET_URL);
+  }
+});
+
+app.on('before-quit', () => {
+  if (rpcInterval) {
+    clearInterval(rpcInterval);
+    rpcInterval = null;
+  }
+  if (rpc) {
+    try {
+      rpc.clearActivity().catch(() => {});
+      rpc.destroy().catch(() => {});
+    } catch (_) {}
   }
 });
 

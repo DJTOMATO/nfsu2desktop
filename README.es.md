@@ -42,6 +42,7 @@ Podés bajar el último instalador `Underground 2 Revived Setup.exe` directament
 - **Sin límite en segundo plano:** Desactiva por completo el throttling de rendimiento (`disable-renderer-backgrounding`, `disable-background-timer-throttling`, `disable-backgrounding-occluded-windows`, `backgroundThrottling: false`), permitiendo hacer Alt+Tab libremente sin perder la conexión en salas multijugador o Free Roam.
 - **Rendimiento completo de WebAssembly:** Soporte nativo para WebAssembly JSPI (`WebAssembly.Suspending`), manejo de excepciones (`try_table`), tail calls y SIMD.
 - **Caché local de 3 GB en disco:** Amplia memoria caché en disco para mantener los ~1.8 GB de archivos y texturas del juego descargados localmente, garantizando arranques rápidos sin descargas repetidas.
+- **Discord Rich Presence (RPC):** Muestra tu estado en tiempo real (Menú principal o Conduciendo en Bayview) en tu perfil de Discord con enlaces directos.
 - **Perfiles persistentes y guardado en la nube:** Tus perfiles guardados, configuraciones y credenciales del baúl en la nube quedan seguros en tu almacenamiento local.
 - **Bloqueo de suspensión de pantalla:** Evita que Windows apague la pantalla mientras el cliente está abierto, asegurando una experiencia fluida con mandos y volantes.
 - **Atajos optimizados:** Preserva la tecla `F12` para las capturas de pantalla integradas en el juego y asigna las herramientas de desarrollador a `Ctrl + Shift + I`.
