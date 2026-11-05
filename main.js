@@ -25,7 +25,26 @@ app.commandLine.appendSwitch('disable-backgrounding-occluded-windows');
 app.commandLine.appendSwitch('enable-experimental-web-platform-features');
 
 if (process.platform === 'linux') {
-  app.commandLine.appendSwitch('enable-features', 'Vulkan,WebAssemblyJSPI');
+  // Clear any global Electron environment hints (e.g. CachyOS / Arch /etc/environment or electron-flags.conf)
+  // that force native Wayland Ozone, which causes Chromium's wayland_surface_factory to crash with Vulkan
+  delete process.env.ELECTRON_OZONE_PLATFORM_HINT;
+
+  // Unless the user explicitly passed --ozone-platform via CLI, force X11 (XWayland)
+  // This allows hardware-accelerated Vulkan & WebGPU to run stably without Wayland surface conflicts
+  if (!app.commandLine.hasSwitch('ozone-platform')) {
+    app.commandLine.appendSwitch('ozone-platform', 'x11');
+  }
+  if (!app.commandLine.hasSwitch('ozone-platform-hint')) {
+    app.commandLine.appendSwitch('ozone-platform-hint', 'x11');
+  }
+
+  // Only append Vulkan to enable-features if not forced into native Wayland
+  const isExplicitWayland = app.commandLine.getSwitchValue('ozone-platform') === 'wayland';
+  if (isExplicitWayland) {
+    app.commandLine.appendSwitch('enable-features', 'WebAssemblyJSPI');
+  } else {
+    app.commandLine.appendSwitch('enable-features', 'Vulkan,WebAssemblyJSPI');
+  }
 } else {
   app.commandLine.appendSwitch('enable-features', 'WebAssemblyJSPI');
 }
