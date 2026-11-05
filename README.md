@@ -41,7 +41,7 @@ Grab the latest installer `Underground 2 Revived Setup.exe` from the [**Releases
 - **Forced Dedicated GPU Acceleration:** Launches with `force_high_performance_gpu`, `ignore-gpu-blocklist`, `enable-unsafe-webgpu`, `enable-gpu-rasterization`, `enable-zero-copy`, and `enable-oop-rasterization` so Dawn/WebGPU utilizes your dedicated graphics card with zero-copy frame presentation.
 - **No Background Throttling:** Background throttling is completely disabled (`disable-renderer-backgrounding`, `disable-background-timer-throttling`, `disable-backgrounding-occluded-windows`, `backgroundThrottling: false`), allowing you to alt-tab freely without disconnecting from multiplayer lobbies or online Free Roam.
 - **Full WebAssembly Performance:** Full support for WebAssembly JSPI (`WebAssembly.Suspending`), `try_table` exception handling, tail calls, and SIMD.
-- **1 GB Local Disk Cache:** Pre-allocated disk cache keeps streamed game assets and binaries cached locally for fast repeat launches.
+- **3 GB Local Disk Cache:** Generous local disk cache keeps the ~1.8 GB streamed game assets, textures, and binaries cached locally for fast repeat launches without cache eviction.
 - **Persistent Profiles & Cloud Vault:** Your saved profiles, settings, and cloud vault credentials remain persisted in your client profile.
 - **Display Sleep Blocker:** Prevents Windows display sleep while the client is open, ensuring uninterrupted sessions on gamepads and wheels.
 - **Native Shortcut Handling:** Preserves `F12` for in-game screenshots and moves DevTools to `Ctrl + Shift + I`.
@@ -54,7 +54,7 @@ Grab the latest installer `Underground 2 Revived Setup.exe` from the [**Releases
 | **CPU** | 4-core x86_64 processor | Modern 6+ core CPU (Ryzen 5 / Core i5 or better) |
 | **GPU** | DirectX 12 / Vulkan capable GPU with WebGPU support | Dedicated NVIDIA (GTX 1060 / RTX series) or AMD (RX 580 / RX 6000+) |
 | **RAM** | 4 GB | 8 GB+ |
-| **Storage** | ~300 MB for the client + up to 1 GB cache | SSD with 1.5 GB free space |
+| **Storage** | ~300 MB for the client + up to 3 GB cache | SSD with 3.5 GB free space |
 | **Network** | Broadband connection (streams game assets) | Stable broadband for online Free Roam & races |
 
 ## Shortcuts
@@ -64,6 +64,7 @@ Grab the latest installer `Underground 2 Revived Setup.exe` from the [**Releases
 | `F11` / `Alt + Enter` | Toggle fullscreen |
 | `F5` / `Ctrl + R` | Reload page |
 | `Ctrl + Shift + I` | Toggle DevTools |
+| `F9` | Custom radio menu (select local music folder) |
 | `F12` | In-game screenshot (handled by the game) |
 | `Enter` | Play / Start (on boot screen) |
 | `Esc` / `Start` | Pause / Garage menu (in-game) |

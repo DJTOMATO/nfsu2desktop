@@ -41,7 +41,7 @@ Podés bajar el último instalador `Underground 2 Revived Setup.exe` directament
 - **Uso forzado de GPU dedicada:** Inicia con `force_high_performance_gpu`, `ignore-gpu-blocklist`, `enable-unsafe-webgpu`, `enable-gpu-rasterization`, `enable-zero-copy` y `enable-oop-rasterization` para que Dawn/WebGPU utilice tu placa de video dedicada con presentación zero-copy.
 - **Sin límite en segundo plano:** Desactiva por completo el throttling de rendimiento (`disable-renderer-backgrounding`, `disable-background-timer-throttling`, `disable-backgrounding-occluded-windows`, `backgroundThrottling: false`), permitiendo hacer Alt+Tab libremente sin perder la conexión en salas multijugador o Free Roam.
 - **Rendimiento completo de WebAssembly:** Soporte nativo para WebAssembly JSPI (`WebAssembly.Suspending`), manejo de excepciones (`try_table`), tail calls y SIMD.
-- **Caché local de 1 GB en disco:** Mantiene los archivos y binarios del juego en disco local para que los arranques posteriores sean prácticamente instantáneos.
+- **Caché local de 3 GB en disco:** Amplia memoria caché en disco para mantener los ~1.8 GB de archivos y texturas del juego descargados localmente, garantizando arranques rápidos sin descargas repetidas.
 - **Perfiles persistentes y guardado en la nube:** Tus perfiles guardados, configuraciones y credenciales del baúl en la nube quedan seguros en tu almacenamiento local.
 - **Bloqueo de suspensión de pantalla:** Evita que Windows apague la pantalla mientras el cliente está abierto, asegurando una experiencia fluida con mandos y volantes.
 - **Atajos optimizados:** Preserva la tecla `F12` para las capturas de pantalla integradas en el juego y asigna las herramientas de desarrollador a `Ctrl + Shift + I`.
@@ -54,7 +54,7 @@ Podés bajar el último instalador `Underground 2 Revived Setup.exe` directament
 | **Procesador (CPU)** | 4 núcleos x86_64 | 6+ núcleos modernos (Ryzen 5 / Core i5 o superior) |
 | **Placa de video (GPU)** | Compatible con DirectX 12 / Vulkan y WebGPU | Placa dedicada NVIDIA (GTX 1060 / serie RTX) o AMD (RX 580 / RX 6000+) |
 | **Memoria RAM** | 4 GB | 8 GB o más |
-| **Almacenamiento** | ~300 MB para el cliente + hasta 1 GB de caché | SSD con 1.5 GB libres |
+| **Almacenamiento** | ~300 MB para el cliente + hasta 3 GB de caché | SSD con 3.5 GB libres |
 | **Conexión** | Banda ancha (descarga assets bajo demanda) | Conexión estable para Free Roam y carreras online |
 
 ## Atajos de teclado
@@ -64,6 +64,7 @@ Podés bajar el último instalador `Underground 2 Revived Setup.exe` directament
 | `F11` / `Alt + Enter` | Pantalla completa nativa de la ventana |
 | `F5` / `Ctrl + R` | Recargar página |
 | `Ctrl + Shift + I` | Abrir/cerrar herramientas de desarrollo (DevTools) |
+| `F9` | Menú de radio personalizada (elegir carpeta de música local) |
 | `F12` | Captura de pantalla dentro del juego |
 | `Enter` | Jugar / Iniciar (en la pantalla inicial) |
 | `Esc` / `Start` | Pausa / Menú del garaje (dentro del juego) |
