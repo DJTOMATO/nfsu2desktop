@@ -42,7 +42,8 @@ Grab the latest installer `Underground 2 Revived Setup.exe` from the [**Releases
 - **No Background Throttling:** Background throttling is completely disabled (`disable-renderer-backgrounding`, `disable-background-timer-throttling`, `disable-backgrounding-occluded-windows`, `backgroundThrottling: false`), allowing you to alt-tab freely without disconnecting from multiplayer lobbies or online Free Roam.
 - **Full WebAssembly Performance:** Full support for WebAssembly JSPI (`WebAssembly.Suspending`), `try_table` exception handling, tail calls, and SIMD.
 - **3 GB Local Disk Cache:** Generous local disk cache keeps the ~1.8 GB streamed game assets, textures, and binaries cached locally for fast repeat launches without cache eviction.
-- **Discord Rich Presence (RPC):** Shows your current in-game status (Main Menu or Cruising in Bayview) directly on your Discord profile with quick links.
+- **Discord Rich Presence (RPC):** Live activity tracking displaying whether you are cruising Free Roam, competing in Drift events, participating in Multiplayer/Sprint/Circuit races, tuning in the Garage, or taking photos in Photo Mode.
+- **Dynamic Mod Engine (`nfsu2mod.js`):** Loads client-side telemetry and mod improvements dynamically on startup from GitHub (with offline local fallback), delivering seamless Over-The-Air enhancements and Discord RPC updates without requiring full client re-installations.
 - **Persistent Profiles & Cloud Vault:** Your saved profiles, settings, and cloud vault credentials remain persisted in your client profile.
 - **Display Sleep Blocker:** Prevents Windows display sleep while the client is open, ensuring uninterrupted sessions on gamepads and wheels.
 - **Native Shortcut Handling:** Preserves `F12` for in-game screenshots and moves DevTools to `Ctrl + Shift + I`.

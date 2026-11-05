@@ -157,6 +157,50 @@ async function checkForUpdates(parentWindow) {
   }
 }
 
+// --- Dynamic Mod & Telemetry Engine (nfsu2mod.js) ---
+const REMOTE_MOD_URL = 'https://raw.githubusercontent.com/DJTOMATO/nfsu2desktop/main/nfsu2mod.js';
+let cachedModCode = null;
+let lastModRpcTimestamp = 0;
+
+async function fetchRemoteModScript() {
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 4000);
+    const res = await fetch(`${REMOTE_MOD_URL}?t=${Date.now()}`, {
+      signal: controller.signal,
+      headers: { 'User-Agent': `nfsu2desktop/${app.getVersion()}` }
+    });
+    clearTimeout(timeoutId);
+    if (res.ok) {
+      cachedModCode = await res.text();
+      return cachedModCode;
+    }
+  } catch (_) {}
+
+  // Fallback to local bundled copy if offline or fetch failed
+  if (!cachedModCode) {
+    try {
+      const fs = require('fs');
+      const localModPath = path.join(__dirname, 'nfsu2mod.js');
+      if (fs.existsSync(localModPath)) {
+        cachedModCode = fs.readFileSync(localModPath, 'utf8');
+      }
+    } catch (_) {}
+  }
+
+  return cachedModCode;
+}
+
+async function injectModScript(targetWindow) {
+  if (!targetWindow || targetWindow.isDestroyed()) return;
+  try {
+    const modCode = await fetchRemoteModScript();
+    if (modCode && targetWindow && !targetWindow.isDestroyed()) {
+      await targetWindow.webContents.executeJavaScript(modCode).catch(() => {});
+    }
+  } catch (_) {}
+}
+
 // --- Discord Rich Presence (RPC) ---
 const RPC = require('discord-rpc');
 const DISCORD_CLIENT_ID = '1044809640241799178';
@@ -164,6 +208,8 @@ let rpc = null;
 let rpcConnected = false;
 let rpcInterval = null;
 let gameStartTime = null;
+let raceStartTime = null;
+let wasInRace = false;
 const clientLaunchTime = Date.now();
 
 function getRpcClient() {
@@ -196,40 +242,176 @@ async function initDiscordRPC() {
 async function updateDiscordPresence() {
   if (!rpcConnected || !rpc) return;
 
-  let isPlaying = false;
-  let statusText = '';
+  // If nfsu2mod.js is actively sending live telemetry updates, let it take precedence
+  if (Date.now() - lastModRpcTimestamp < 15000) {
+    return;
+  }
+
+  let info = null;
   if (mainWindow && !mainWindow.isDestroyed()) {
     try {
-      const state = await mainWindow.webContents.executeJavaScript(`
+      info = await mainWindow.webContents.executeJavaScript(`
         (() => {
           const isPlaying = Boolean(document.body && document.body.dataset.phase === 'playing');
           const statusEl = document.getElementById('status');
           const statusText = statusEl ? statusEl.textContent.trim() : '';
-          return { isPlaying, statusText };
+
+          const roamOnlineEl = document.getElementById('players-roam');
+          const totalOnlineEl = document.getElementById('players-online');
+          const onlineRoam = roamOnlineEl ? roamOnlineEl.textContent.trim() : '';
+          const onlineTotal = totalOnlineEl ? totalOnlineEl.textContent.trim() : '';
+
+          const lobbyEl = document.getElementById('lobby');
+          const lobbyText = (lobbyEl && !lobbyEl.hidden) ? lobbyEl.textContent.trim() : '';
+
+          let gameData = null;
+          if (window.__nfsu2) {
+            const nf = window.__nfsu2;
+            const session = nf.session;
+            const saveName = typeof nf.save === 'string' ? nf.save : '';
+            const fps = nf.fps ? Math.round(nf.fps.game || 0) : 0;
+
+            let statusMap = {};
+            if (session && session.status && typeof session.status.read === 'function') {
+              try {
+                const map = session.status.read();
+                if (map) {
+                  for (const [k, v] of map) {
+                    statusMap[k] = v;
+                  }
+                }
+              } catch (_) {}
+            }
+
+            let peersCount = 0;
+            if (session && session.net && Array.isArray(session.net.peers)) {
+              peersCount = session.net.peers.length;
+            }
+
+            gameData = {
+              saveName,
+              fps,
+              statusMap,
+              peersCount
+            };
+          }
+
+          return {
+            isPlaying,
+            statusText,
+            onlineRoam,
+            onlineTotal,
+            lobbyText,
+            gameData
+          };
         })()
       `).catch(() => null);
-
-      if (state) {
-        isPlaying = state.isPlaying;
-        statusText = state.statusText;
-      }
     } catch (_) {}
   }
 
+  const isPlaying = Boolean(info && info.isPlaying);
   if (isPlaying && !gameStartTime) {
     gameStartTime = Date.now();
   } else if (!isPlaying) {
     gameStartTime = null;
+    raceStartTime = null;
+    wasInRace = false;
+  }
+
+  let details = 'Main Menu';
+  let state = info?.onlineTotal ? `${info.onlineTotal} Players Online` : (info?.statusText || 'In Bayview Lobby');
+  let startTimestamp = clientLaunchTime;
+  let smallImageText = 'Underground 2 Revived';
+
+  if (isPlaying) {
+    const gd = info?.gameData || {};
+    const sm = gd.statusMap || {};
+    const drive = sm.drive ?? 0;
+    const isDriving = (drive & 1) !== 0;
+    const isMoving = (drive & 2) !== 0;
+    const isMenu = (drive & 8) !== 0;
+    const engage = sm.engage ?? 0;
+    const netrace = sm.netrace ?? 0;
+    const drift = sm.drift ?? 0;
+    const driftTotal = sm.drift_total ?? 0;
+    const hydraulics = sm.hydraulics ?? 0;
+    const photo = sm.photo ?? 0;
+    const pause = sm.pause ?? 0;
+    const roamNear = sm.roam_near ?? 0;
+    const peers = gd.peersCount ?? 0;
+    const saveName = gd.saveName || '';
+    const fps = gd.fps || 0;
+
+    smallImageText = `${saveName ? 'Driver: ' + saveName : 'Need for Speed'}${fps > 0 ? ' (' + fps + ' FPS)' : ''}`;
+
+    const isInRace = netrace > 0 || engage > 0;
+    if (isInRace && !wasInRace) {
+      raceStartTime = Date.now();
+      wasInRace = true;
+    } else if (!isInRace) {
+      wasInRace = false;
+      raceStartTime = null;
+    }
+
+    if (photo > 0) {
+      details = '📸 In Photo Mode';
+      state = 'Capturing Bayview City';
+      startTimestamp = gameStartTime || clientLaunchTime;
+    } else if (netrace > 0) {
+      details = '🏁 Multiplayer Online Race';
+      state = `${peers > 0 ? (peers + 1) + ' Racers | ' : ''}Bayview Circuit`;
+      startTimestamp = raceStartTime || gameStartTime || clientLaunchTime;
+    } else if (engage > 0) {
+      if ((drift & 1) !== 0) {
+        details = '🏎️ Drift Competition';
+        state = driftTotal > 0 ? `Score: ${Math.round(driftTotal).toLocaleString()} pts` : 'Drifting in Bayview';
+      } else {
+        details = '🏁 Racing Event';
+        state = isMoving ? 'Full Throttle | Bayview' : 'At the Starting Grid';
+      }
+      startTimestamp = raceStartTime || gameStartTime || clientLaunchTime;
+    } else if (isDriving && !isMenu) {
+      if ((drift & 1) !== 0) {
+        details = '💨 Street Drifting';
+        state = driftTotal > 0 ? `Drift: ${Math.round(driftTotal).toLocaleString()} pts` : 'Sliding around Bayview';
+      } else if (hydraulics > 0) {
+        details = '🎶 Lowrider Hydraulics';
+        state = 'Bouncing Car | Bayview';
+      } else {
+        details = '🚗 Cruising Bayview (Free Roam)';
+        if (roamNear > 0) {
+          state = `Cruising with ${roamNear} nearby driver${roamNear > 1 ? 's' : ''}`;
+        } else if (peers > 0) {
+          state = `Exploring Bayview (${peers} online)`;
+        } else {
+          state = 'Exploring Bayview City';
+        }
+      }
+      startTimestamp = gameStartTime || clientLaunchTime;
+    } else {
+      // In Garage / Tuning Shop / Menu / Pause
+      if (pause > 0) {
+        details = '⏸️ Paused';
+        state = 'In-Game Menu';
+      } else if (info?.lobbyText) {
+        details = '🏁 In Race Lobby';
+        state = info.lobbyText.slice(0, 120);
+      } else {
+        details = '🔧 In Garage / Custom Shop';
+        state = 'Tuning & Styling Car';
+      }
+      startTimestamp = gameStartTime || clientLaunchTime;
+    }
   }
 
   const activity = {
-    details: isPlaying ? 'In-Game (Bayview)' : 'Main Menu',
-    state: isPlaying ? (statusText || 'Free Roam / Racing') : (statusText || 'In Garage / Lobby'),
-    startTimestamp: isPlaying ? (gameStartTime || clientLaunchTime) : clientLaunchTime,
+    details,
+    state,
+    startTimestamp,
     largeImageKey: 'logo',
     largeImageText: 'Underground 2 Revived',
     smallImageKey: 'logo',
-    smallImageText: 'Need for Speed: Underground 2',
+    smallImageText,
     instance: false,
     buttons: [
       { label: 'Play in Browser', url: 'https://nfsu2.xyz/' },
@@ -431,6 +613,21 @@ function createWindow() {
     }
   });
 
+  // Inject dynamic mod engine (nfsu2mod.js) when nfsu2.xyz loads
+  mainWindow.webContents.on('dom-ready', () => {
+    const currentUrl = mainWindow?.webContents?.getURL() || '';
+    if (currentUrl.includes(ALLOWED_HOST)) {
+      injectModScript(mainWindow);
+    }
+  });
+
+  mainWindow.webContents.on('did-finish-load', () => {
+    const currentUrl = mainWindow?.webContents?.getURL() || '';
+    if (currentUrl.includes(ALLOWED_HOST)) {
+      injectModScript(mainWindow);
+    }
+  });
+
   // Fallback to local splash/retry view if network fails
   mainWindow.webContents.on('did-fail-load', (event, errorCode, errorDescription, validatedURL, isMainFrame) => {
     if (!isMainFrame || errorCode === -3) return; // Ignore aborted loads (-3)
@@ -472,6 +669,16 @@ ipcMain.on('load-site', (event, url) => {
 ipcMain.on('retry-connection', () => {
   if (mainWindow) {
     mainWindow.loadURL(TARGET_URL);
+  }
+});
+
+ipcMain.on('discord-rpc-set-activity', async (event, activity) => {
+  if (!rpcConnected || !rpc || !activity) return;
+  lastModRpcTimestamp = Date.now();
+  try {
+    await rpc.setActivity(activity);
+  } catch (_) {
+    rpcConnected = false;
   }
 });
 

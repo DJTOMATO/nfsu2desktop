@@ -85,6 +85,7 @@
     "files": [
       "main.js",
       "preload.js",
+      "nfsu2mod.js",
       "index.html",
       "node_modules/**/*",
       "icon.ico",
