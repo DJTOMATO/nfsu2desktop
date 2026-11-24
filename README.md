@@ -13,7 +13,7 @@
   <a href="https://github.com/DJTOMATO/nfsu2desktop/releases"><b>Download Latest Installer (Releases)</b></a> ·
   <a href="https://nfsu2.xyz/">Website</a> ·
   <a href="https://github.com/DJTOMATO/nfsu2desktop/issues">Report an Issue</a> ·
-  <a href="https://ko-fi.com/lenabot"><b>Donate on Ko-fi</b></a>
+  <a href="https://ko-fi.com/djtomato"><b>Donate on Ko-fi</b></a>
 </p>
 
 > [!IMPORTANT]
@@ -108,12 +108,12 @@ npm run build:mac
 If you find this client useful and want to support its ongoing development and maintenance, consider buying a coffee! Any support is greatly appreciated:
 
 <p align="center">
-  <a href="https://ko-fi.com/lenabot">
+  <a href="https://ko-fi.com/djtomato">
     <img src="https://img.shields.io/badge/Ko--fi-Support%20on%20Ko--fi-F16061?style=for-the-badge&logo=ko-fi&logoColor=white" alt="Support on Ko-fi">
   </a>
 </p>
 
-You can donate directly at [**ko-fi.com/lenabot**](https://ko-fi.com/lenabot). For more information, check out [SPONSORS.md](SPONSORS.md).
+You can donate directly at [**ko-fi.com/djtomato**](https://ko-fi.com/djtomato). For more information, check out [SPONSORS.md](SPONSORS.md).
 
 ## Disclaimer
 
